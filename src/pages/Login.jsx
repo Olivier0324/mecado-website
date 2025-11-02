@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useLoginMutation,useGetUserProfileQuery } from "../services/api/apiSlice";
+import { useLoginMutation, useGetUserProfileQuery } from "../services/api/apiSlice";
 import { login as signIn } from "../services/slices/authSlice";
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, AlertCircle, ShoppingBag } from "lucide-react";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -14,8 +14,8 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-    const [login] = useLoginMutation();
-    
+  const [login] = useLoginMutation();
+  const { data: userProfile } = useGetUserProfileQuery();
 
   const from = location.state?.from?.pathname || "/dashboard";
 
@@ -69,6 +69,14 @@ function Login() {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="px-8 py-6">
+            {/* Logo */}
+            <div className="text-center mb-8">
+              <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white hover:opacity-80 transition-opacity">
+                <ShoppingBag size={24} />
+                <span className="ml-2">Mecado</span>
+              </Link>
+            </div>
+
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 Welcome Back

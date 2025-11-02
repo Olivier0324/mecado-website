@@ -5,7 +5,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://api.escuelajs.co",
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token;
+      const token = getState().auth?.token; // Added optional chaining for safety
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
@@ -21,6 +21,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: userData,
       }),
+      invalidatesTags: ["User"], // Added cache invalidation
     }),
 
     // Login endpoint
@@ -30,26 +31,31 @@ export const apiSlice = createApi({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["User"], // Added cache invalidation
     }),
 
     // Get user profile
     getUserProfile: builder.query({
       query: () => "/api/v1/auth/profile",
+      providesTags: ["User"], // Added cache tag
     }),
 
     // Get products
     getProducts: builder.query({
       query: () => "/api/v1/products",
+      providesTags: ["Product"], // Added cache tag
     }),
 
     // Get product by ID
     getProductById: builder.query({
       query: (id) => `/api/v1/products/${id}`,
+      providesTags: ["Product"], // Added cache tag
     }),
 
     // Get related products
     getRelatedProducts: builder.query({
-      query: (id) => `/api/v1/products/${id}/categories`,
+      query: (id) => `/api/v1/products/${id}/related`,
+      providesTags: ["Product"], // Added cache tag
     }),
   }),
 });

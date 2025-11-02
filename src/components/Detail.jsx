@@ -13,42 +13,30 @@ import { useGetProductByIdQuery, useGetRelatedProductsQuery } from "../services/
 import Footer from "./Footer";
 
 function Detail() {
-  const { id } = useParams();
+    const { id } = useParams();
   const { data: product, isLoading, isError } = useGetProductByIdQuery(id);
-  const { data: relatedProducts = [] } = useGetRelatedProductsQuery(id);
+    const { data: relatedProducts } = useGetRelatedProductsQuery(id);
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const dispatch = useDispatch();
   const { items } = useSelector(state => state.cart);
 
-  if (isLoading)
-    return <p className="text-center mt-10 text-gray-500">Loading...</p>;
-  if (isError)
-    return (
-      <p className="text-center mt-10 text-red-500">Error loading product.</p>
-    );
+  if (isLoading) return <p className="text-center mt-10 text-gray-500">Loading...</p>;
+  if (isError) return <p className="text-center mt-10 text-red-500">Error loading product.</p>;
   if (!product) return null;
 
   const openPreview = (index) => setSelectedIndex(index);
   const closePreview = () => setSelectedIndex(null);
-  const prevImage = () =>
-    setSelectedIndex((prev) =>
-      prev === 0 ? product.images.length - 1 : prev - 1
-    );
-  const nextImage = () =>
-    setSelectedIndex((prev) =>
-      prev === product.images.length - 1 ? 0 : prev + 1
-    );
+  const prevImage = () => setSelectedIndex(prev => prev === 0 ? product.images.length - 1 : prev - 1);
+  const nextImage = () => setSelectedIndex(prev => prev === product.images.length - 1 ? 0 : prev + 1);
 
   const handleAddToCart = () => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       alert("You must log in to add items to your cart!");
       navigate("/login");
       return;
     }
-
     dispatch(addToCart({
       id: product.id,
       title: product.title,
@@ -95,10 +83,8 @@ function Detail() {
               alt={product.title}
               className="w-full h-auto rounded-lg mb-4"
             />
-            <h2 className="text-2xl font-bold mb-2">{product.title}</h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-3">
-              {product.description}
-            </p>
+            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">{product.title}</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-3">{product.description}</p>
             <p className="text-xl font-semibold mb-4">${product.price}</p>
 
             <button
@@ -116,14 +102,14 @@ function Detail() {
         </div>
 
         {/* Related Products Section */}
-        {relatedProducts.length > 0 && (
+        {relatedProducts && relatedProducts.length > 0 && (
           <div className="mt-12">
             <h3 className="text-xl font-semibold mb-6">Related Products</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {relatedProducts.map((relatedProduct) => (
                 <div
                   key={relatedProduct.id}
-                  className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md"
+                  className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
                 >
                   <img
                     src={relatedProduct.images?.[0]}
